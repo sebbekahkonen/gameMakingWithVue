@@ -5,12 +5,14 @@
 // import Testing from "./components/Testing.vue";
 // import BaseRoad from "./components/BaseRoad.vue";
 import GameCharacter from "./components/GameCharacter.vue";
+// import GameOver from "./components/GameOver.vue";
 </script>
 
 <template>
   <!-- <Testing /> -->
   <!-- <HelloWorld msg="Hello Vue 3 + Vite" /> -->
   <GameCharacter />
+  <!-- <GameOver /> -->
   <!-- <BaseRoad /> -->
 </template>
 
