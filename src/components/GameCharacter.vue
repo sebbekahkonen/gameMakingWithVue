@@ -1,6 +1,12 @@
 <template>
   <div class="mainDiv" :class="[getDifficulty, getGameOn]">
     <div class="parentDiv">
+      <div class="difficultyDiv">
+        <h1 v-if="difficultyNormal">NORMAL</h1>
+        <h1 v-if="difficultyMedium">MEDIUM</h1>
+        <h1 v-if="difficultyHard">HARD</h1>
+        <h1 v-if="difficultyExpert">EXPERT</h1>
+      </div>
       <input
         ref="inputField"
         type="text"
@@ -20,6 +26,7 @@
     <div ref="redCar" class="redCar"></div>
     <div ref="blueCar" class="blueCar"></div>
     <div ref="greenCar" class="greenCar"></div>
+    <Winner v-if="isGameWon" @start-game="startCountDown()" />
     <GameOver v-if="isGameOver" @start-game="startCountDown()" />
     <countDown v-if="countDown != 0" :count-down-number="countDown" />
   </div>
@@ -27,16 +34,18 @@
 
 
 <script>
-// import { ref, onMounted } from "vue";
 import GameOver from "./GameOver.vue";
 import countDown from "./countDown.vue";
+import Winner from "./Winner.vue";
 export default {
   components: {
     GameOver,
     countDown,
+    Winner,
   },
 
   data: () => ({
+    isGameWon: false,
     topStyle: 50,
     leftStyle: 31,
     isGameOver: false,
@@ -72,9 +81,11 @@ export default {
 
   methods: {
     startCountDown() {
+      this.isGameWon = false;
+      this.isGameOver = false;
       this.countDown = 3;
       const interval = setInterval(() => {
-        console.log(this.countDown);
+        this.countDown;
         this.countDown--;
         if (this.countDown === 0) {
           clearInterval(interval);
@@ -90,7 +101,7 @@ export default {
     },
 
     moveLeft() {
-      console.log(this.leftStyle);
+      this.leftStyle;
       if (this.leftStyle === 31) {
         return;
       } else {
@@ -110,7 +121,7 @@ export default {
       let positionCharacterTop = Math.round(
         this.$refs.character.getBoundingClientRect().top
       );
-      console.log(positionCharacterTop);
+      positionCharacterTop;
       if (this.topStyle === 20) {
         return;
       } else {
@@ -122,7 +133,7 @@ export default {
       let positionCharacterTop = Math.round(
         this.$refs.character.getBoundingClientRect().top
       );
-      console.log(positionCharacterTop);
+      positionCharacterTop;
       if (this.topStyle === 80) {
         return;
       } else {
@@ -132,6 +143,17 @@ export default {
 
     checkKeyPress(event) {
       event.preventDefault();
+    },
+
+    stopWinnerGame() {
+      this.gameIsOn = false;
+      this.difficultyNormal = false;
+      this.difficultyMedium = false;
+      this.difficultyHard = false;
+      this.difficultyExpert = false;
+      this.isGameWon = true;
+      clearInterval(this.interval);
+      clearInterval(this.difficultyTimer);
     },
 
     stopGame() {
@@ -154,23 +176,23 @@ export default {
         }
         /* difficulty: MEDIUM*/
         if (this.difficultyTimer === 15) {
-          console.log("MEDIUM level");
           this.difficultyNormal = false;
           this.difficultyMedium = true;
         }
 
         /* difficulty: HARD */
         if (this.difficultyTimer === 25) {
-          console.log("HARD level");
           this.difficultyMedium = false;
           this.difficultyHard = true;
         }
 
         /* difficulty: EXPERT */
         if (this.difficultyTimer === 35) {
-          console.log("EXPERT level");
           this.difficultyHard = false;
           this.difficultyExpert = true;
+        }
+        if (this.difficultyTimer === 45) {
+          this.stopWinnerGame();
         }
       }, 1000);
 
@@ -193,12 +215,6 @@ export default {
         let positionCharacterTop = Math.round(
           this.$refs.character.getBoundingClientRect().top
         );
-        if (
-          Math.ceil((positionCharacterTop - 20) / 10) ===
-          Math.ceil((positionGreenCar - 20) / 10)
-        ) {
-          console.log("same pos");
-        }
 
         if (
           this.leftStyle <= 40 &&
@@ -236,6 +252,12 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+.difficultyDiv {
+  position: absolute;
+  font-family: "Press Start 2P", cursive;
+}
+
 .mainDiv {
   width: 100%;
   height: 100%;
