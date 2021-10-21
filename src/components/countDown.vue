@@ -16,6 +16,9 @@ export default {
 
 <style>
 .countDownDiv {
+  top: 50%;
+  left: 46%;
+  position: absolute;
   width: 100px;
   height: 100px;
   background-color: green;

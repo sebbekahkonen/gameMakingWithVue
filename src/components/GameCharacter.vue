@@ -1,5 +1,5 @@
 <template>
-  <div class="mainDiv" :class="getGameOn">
+  <div class="mainDiv" :class="[getDifficulty, getGameOn]">
     <div class="parentDiv">
       <input
         ref="inputField"
@@ -15,9 +15,9 @@
       :style="{ left: `${leftStyle}%` }"
       class="character"
     ></div>
-    <div ref="redCar" class="redCar" :class="getDifficulty"></div>
-    <div ref="blueCar" class="blueCar" :class="getDifficulty"></div>
-    <div ref="greenCar" class="greenCar" :class="getDifficulty"></div>
+    <div ref="redCar" class="redCar"></div>
+    <div ref="blueCar" class="blueCar"></div>
+    <div ref="greenCar" class="greenCar"></div>
     <GameOver v-if="isGameOver" @start-game="startCountDown()" />
     <countDown v-if="countDown != 0" :count-down-number="countDown" />
   </div>
@@ -76,6 +76,11 @@ export default {
         if (this.countDown === 0) {
           clearInterval(interval);
           this.gameIsOn = true;
+          this.difficultyMedium = false;
+          this.difficultyHard = false;
+          this.difficultyExpert = false;
+          this.difficultyNormal = false;
+          this.difficultyTimer = 0;
           this.startGame();
         }
       }, 1000);
@@ -83,31 +88,19 @@ export default {
 
     moveLeft() {
       console.log(this.leftStyle);
-      // this.leftStyle = this.leftStyle - 5;
       if (this.leftStyle === 31) {
         return;
       } else {
         this.leftStyle = this.leftStyle - 5;
       }
-      // if(this.leftStyle === 21)
-      // if (this.leftStyle === 60) {
-      //   this.leftStyle = this.leftStyle - 29;
-      // } else {
-      //   return;
-      // }
     },
 
     moveRight() {
-      // console.log(this.leftStyle);
       if (this.leftStyle === 61) {
         return;
       } else {
         this.leftStyle = this.leftStyle + 5;
       }
-      //   this.leftStyle = this.leftStyle + 29;
-      // } else {
-      //   return;
-      // }
     },
 
     checkKeyPress(event) {
@@ -116,21 +109,44 @@ export default {
 
     stopGame() {
       this.gameIsOn = false;
+      this.difficultyNormal = false;
+      this.difficultyMedium = false;
+      this.difficultyHard = false;
+      this.difficultyExpert = false;
       this.isGameOver = true;
       clearInterval(this.interval);
       clearInterval(this.difficultyTimer);
     },
 
     startGame() {
-      this.difficultyTimer = setInterval(() => {
+      const timerInterval = setInterval(() => {
         this.difficultyTimer++;
-        if (this.difficultyTimer === 10) {
-          console.log("wow you've reached 10");
+        /* difficulty: NORMAL*/
+        if (this.difficultyTimer < 15) {
+          this.difficultyNormal = true;
+        }
+        /* difficulty: MEDIUM*/
+        if (this.difficultyTimer === 15) {
+          console.log("MEDIUM level");
+          this.difficultyNormal = false;
+          this.difficultyMedium = true;
+        }
+
+        /* difficulty: HARD */
+        if (this.difficultyTimer === 25) {
+          console.log("HARD level");
+          this.difficultyMedium = false;
+          this.difficultyHard = true;
+        }
+
+        /* difficulty: EXPERT */
+        if (this.difficultyTimer === 35) {
+          console.log("EXPERT level");
+          this.difficultyHard = false;
+          this.difficultyExpert = true;
         }
       }, 1000);
-      if (this.difficultyTimer === 10) {
-        console.log("timer is 10");
-      }
+
       this.$refs.inputField.focus();
       this.gameIsOn = true;
       this.isGameOver = false;
@@ -153,6 +169,7 @@ export default {
           positionRedCar > 400 &&
           positionRedCar < 470
         ) {
+          clearInterval(timerInterval);
           this.stopGame();
           return;
         }
@@ -162,6 +179,7 @@ export default {
           positionBlueCar > 400 &&
           positionBlueCar < 470
         ) {
+          clearInterval(timerInterval);
           this.stopGame();
           return;
         }
@@ -173,6 +191,7 @@ export default {
 
 <style scoped>
 .mainDiv {
+  overflow: hidden;
   width: 100%;
   height: 100%;
 }
@@ -217,7 +236,7 @@ input {
 }
 
 /* difficulty: NORMAL */
-.gameOn .normal .blueCar {
+.normal.gameOn .blueCar {
   background: url("../assets/blueCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -225,13 +244,13 @@ input {
   height: 200px;
   position: absolute;
   left: 58%;
-  -webkit-animation: 3.5s;
+  -webkit-animation: 4s;
   -webkit-animation-name: car-vertical-normal;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
   -webkit-animation-delay: 2s;
 }
-.gameOn .normal .redCar {
+.normal.gameOn .redCar {
   background: url("../assets/redCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -239,14 +258,14 @@ input {
   height: 200px;
   position: absolute;
   left: 30%;
-  -webkit-animation: 3.5s;
+  -webkit-animation: 4s;
   -webkit-animation-name: car-vertical-normal;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
   -webkit-animation-delay: 1s;
 }
 
-.gameOn .normal .greenCar {
+.normal.gameOn .greenCar {
   background: url("../assets/greenCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -254,11 +273,11 @@ input {
   height: 200px;
   position: absolute;
   left: 44%;
-  -webkit-animation: 3.5s;
+  -webkit-animation: 4s;
   -webkit-animation-name: car-vertical-normal;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
-  -webkit-animation-delay: 5s;
+  -webkit-animation-delay: 3s;
 }
 
 @keyframes car-vertical-normal {
@@ -272,7 +291,7 @@ input {
 
 /* difficulty: MEDIUM */
 
-.gameOn .medium .blueCar {
+.medium.gameOn .blueCar {
   background: url("../assets/blueCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -280,13 +299,13 @@ input {
   height: 200px;
   position: absolute;
   left: 58%;
-  -webkit-animation: 2.5s;
+  -webkit-animation: 3s;
   -webkit-animation-name: car-vertical-medium;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
   -webkit-animation-delay: 2s;
 }
-.gameOn .medium .redCar {
+.medium.gameOn .redCar {
   background: url("../assets/redCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -294,14 +313,13 @@ input {
   height: 200px;
   position: absolute;
   left: 30%;
-  -webkit-animation: 2.5s;
+  -webkit-animation: 3s;
   -webkit-animation-name: car-vertical-medium;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
   -webkit-animation-delay: 1s;
 }
-
-.gameOn .medium .greenCar {
+.medium.gameOn .greenCar {
   background: url("../assets/greenCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -309,7 +327,7 @@ input {
   height: 200px;
   position: absolute;
   left: 44%;
-  -webkit-animation: 2.5s;
+  -webkit-animation: 3s;
   -webkit-animation-name: car-vertical-medium;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
@@ -326,7 +344,7 @@ input {
 }
 
 /* difficulty: HARD */
-.gameOn .hard .blueCar {
+.hard.gameOn .blueCar {
   background: url("../assets/blueCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -334,13 +352,13 @@ input {
   height: 200px;
   position: absolute;
   left: 58%;
-  -webkit-animation: 1.5s;
+  -webkit-animation: 2s;
   -webkit-animation-name: car-vertical-hard;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
   -webkit-animation-delay: 2s;
 }
-.gameOn .hard .redCar {
+.hard.gameOn .redCar {
   background: url("../assets/redCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -348,14 +366,14 @@ input {
   height: 200px;
   position: absolute;
   left: 30%;
-  -webkit-animation: 1.5s;
+  -webkit-animation: 2s;
   -webkit-animation-name: car-vertical-hard;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
   -webkit-animation-delay: 1s;
 }
 
-.gameOn .hard .greenCar {
+.hard.gameOn .greenCar {
   background: url("../assets/greenCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -363,7 +381,7 @@ input {
   height: 200px;
   position: absolute;
   left: 44%;
-  -webkit-animation: 1.5s;
+  -webkit-animation: 2s;
   -webkit-animation-name: car-vertical-hard;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
@@ -380,7 +398,7 @@ input {
 }
 
 /* difficulty: EXPERT */
-.gameOn .expert .blueCar {
+.expert.gameOn .blueCar {
   background: url("../assets/blueCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -388,13 +406,13 @@ input {
   height: 200px;
   position: absolute;
   left: 58%;
-  -webkit-animation: 1s;
+  -webkit-animation: 1.5s;
   -webkit-animation-name: car-vertical-expert;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
   -webkit-animation-delay: 2s;
 }
-.gameOn .expert .redCar {
+.expert.gameOn .redCar {
   background: url("../assets/redCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -402,14 +420,14 @@ input {
   height: 200px;
   position: absolute;
   left: 30%;
-  -webkit-animation: 1s;
+  -webkit-animation: 1.5s;
   -webkit-animation-name: car-vertical-expert;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
   -webkit-animation-delay: 1s;
 }
 
-.gameOn .expert .greenCar {
+.expert.gameOn .greenCar {
   background: url("../assets/greenCar.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -417,11 +435,11 @@ input {
   height: 200px;
   position: absolute;
   left: 44%;
-  -webkit-animation: 1s;
+  -webkit-animation: 1.5s;
   -webkit-animation-name: car-vertical-expert;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-direction: normal;
-  -webkit-animation-delay: 5s;
+  -webkit-animation-delay: 3s;
 }
 
 @keyframes car-vertical-expert {
