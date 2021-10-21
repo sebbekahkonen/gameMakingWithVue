@@ -6,13 +6,15 @@
         type="text"
         @keydown.left="moveLeft()"
         @keydown.right="moveRight()"
+        @keydown.up="moveUp()"
+        @keydown.down="moveDown()"
         @keypress="checkKeyPress"
         v-model="leftStyle"
       />
     </div>
     <div
       ref="character"
-      :style="{ left: `${leftStyle}%` }"
+      :style="{ left: `${leftStyle}%`, top: `${topStyle}%` }"
       class="character"
     ></div>
     <div ref="redCar" class="redCar"></div>
@@ -35,6 +37,7 @@ export default {
   },
 
   data: () => ({
+    topStyle: 50,
     leftStyle: 31,
     isGameOver: false,
     countDown: 3,
@@ -103,6 +106,22 @@ export default {
       }
     },
 
+    moveUp() {
+      if (this.topStyle === 20) {
+        return;
+      } else {
+        this.topStyle = this.topStyle - 5;
+      }
+    },
+
+    moveDown() {
+      if (this.topStyle === 80) {
+        return;
+      } else {
+        this.topStyle = this.topStyle + 5;
+      }
+    },
+
     checkKeyPress(event) {
       event.preventDefault();
     },
@@ -160,12 +179,12 @@ export default {
           this.$refs.blueCar.getBoundingClientRect().top
         );
 
-        let positionLeftCharacter = Math.round(
-          this.$refs.character.getBoundingClientRect().left
+        let positionGreenCar = Math.round(
+          this.$refs.greenCar.getBoundingClientRect().top
         );
 
         if (
-          (positionLeftCharacter === 253 || positionLeftCharacter === 392) &&
+          this.leftStyle <= 40 &&
           positionRedCar > 400 &&
           positionRedCar < 470
         ) {
@@ -175,13 +194,23 @@ export default {
         }
 
         if (
-          (positionLeftCharacter === 490 || positionLeftCharacter === 758) &&
+          this.leftStyle >= 52 &&
           positionBlueCar > 400 &&
           positionBlueCar < 470
         ) {
           clearInterval(timerInterval);
           this.stopGame();
           return;
+        }
+
+        if (
+          this.leftStyle >= 41 &&
+          this.leftStyle <= 51 &&
+          positionGreenCar > 400 &&
+          positionGreenCar < 470
+        ) {
+          clearInterval(timerInterval);
+          this.stopGame();
         }
       }, 10);
     },
@@ -191,7 +220,6 @@ export default {
 
 <style scoped>
 .mainDiv {
-  overflow: hidden;
   width: 100%;
   height: 100%;
 }
@@ -208,7 +236,7 @@ button {
   background-repeat: no-repeat;
   width: 10%;
   height: 10%;
-  top: 50%;
+  /* top: 50%; */
 }
 
 .parentDiv {
@@ -220,7 +248,7 @@ button {
 input {
   /* width: 100vw; */
   width: 100%;
-  height: 120vw;
+  height: 140vw;
   border: 0;
   /* position: relative; */
   left: 0%;

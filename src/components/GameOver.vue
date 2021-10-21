@@ -17,6 +17,7 @@ export default {
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 .gameOver {
   align-content: center;
   background-color: transparent;
@@ -29,7 +30,8 @@ export default {
 }
 .gameOverImage {
   position: absolute;
-  top: 10%;
+  top: 5%;
+  left: 25%;
   /* left: 5%; */
   /* width: 700px; */
   /* height: 700px; */
@@ -49,7 +51,20 @@ export default {
 }
 .newGameBtn {
   position: absolute;
-  top: 80%;
-  left: 43%;
+  top: 50%;
+  padding: 2%;
+  border-radius: 20px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  left: 25%;
+  color: white;
+  background: linear-gradient(to top, rgb(54, 56, 56), rgb(224, 224, 224));
+  font-family: "Press Start 2P", cursive;
+  font-size: 30px;
+}
+
+.newGameBtn:hover {
+  background: linear-gradient(to bottom, rgb(54, 56, 56), rgb(224, 224, 224));
 }
 </style>
