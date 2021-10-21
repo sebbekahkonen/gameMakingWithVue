@@ -107,6 +107,10 @@ export default {
     },
 
     moveUp() {
+      let positionCharacterTop = Math.round(
+        this.$refs.character.getBoundingClientRect().top
+      );
+      console.log(positionCharacterTop);
       if (this.topStyle === 20) {
         return;
       } else {
@@ -115,6 +119,10 @@ export default {
     },
 
     moveDown() {
+      let positionCharacterTop = Math.round(
+        this.$refs.character.getBoundingClientRect().top
+      );
+      console.log(positionCharacterTop);
       if (this.topStyle === 80) {
         return;
       } else {
@@ -182,11 +190,20 @@ export default {
         let positionGreenCar = Math.round(
           this.$refs.greenCar.getBoundingClientRect().top
         );
+        let positionCharacterTop = Math.round(
+          this.$refs.character.getBoundingClientRect().top
+        );
+        if (
+          Math.ceil((positionCharacterTop - 20) / 10) ===
+          Math.ceil((positionGreenCar - 20) / 10)
+        ) {
+          console.log("same pos");
+        }
 
         if (
           this.leftStyle <= 40 &&
-          positionRedCar > 400 &&
-          positionRedCar < 470
+          Math.ceil((positionCharacterTop - 20) / 10) ===
+            Math.ceil((positionRedCar - 20) / 10)
         ) {
           clearInterval(timerInterval);
           this.stopGame();
@@ -195,8 +212,8 @@ export default {
 
         if (
           this.leftStyle >= 52 &&
-          positionBlueCar > 400 &&
-          positionBlueCar < 470
+          Math.ceil((positionCharacterTop - 20) / 10) ===
+            Math.ceil((positionBlueCar - 20) / 10)
         ) {
           clearInterval(timerInterval);
           this.stopGame();
@@ -206,8 +223,8 @@ export default {
         if (
           this.leftStyle >= 41 &&
           this.leftStyle <= 51 &&
-          positionGreenCar > 400 &&
-          positionGreenCar < 470
+          Math.ceil((positionCharacterTop - 20) / 10) ===
+            Math.ceil((positionGreenCar - 20) / 10)
         ) {
           clearInterval(timerInterval);
           this.stopGame();
